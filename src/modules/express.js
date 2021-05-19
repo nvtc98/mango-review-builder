@@ -77,7 +77,8 @@ const startServer = (port = defaultPort) => {
   // 	next();
   // });
 
-  removeFiles();
+  // removeFiles();
+  console.log("start");
 
   app.use(fileUpload());
 
