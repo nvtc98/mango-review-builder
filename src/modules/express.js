@@ -101,16 +101,14 @@ const startServer = (port = defaultPort) => {
 
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
     let csvFile = request.files.csvFile;
-    console.log("got file", csvFile);
+    console.log("Got csv file.");
 
     // Use the mv() method to place the file somewhere on your server
     saveFile(csvFile, getPath(session, "csv.csv"), (_path, err) => {
-      console.log("save");
       if (err) {
         console.log(err);
         return response.status(400).send("Failed to upload file.");
       }
-      console.log("read");
       readCSV(_path, (data) => {
         csvData[session] = data;
         const list = Object.keys(_.groupBy(data, "Tên phim")).filter((x) =>
@@ -125,7 +123,6 @@ const startServer = (port = defaultPort) => {
   app.post("/progress", function (request, response) {
     const session = _.get(request, "body.session", null);
     const videoSelect = _.get(request, "body.videoSelect", null);
-    console.log("request", request);
     if (!session) {
       return response.status(400).send("No session key included.");
     }

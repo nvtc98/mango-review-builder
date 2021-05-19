@@ -41,7 +41,6 @@ const removeFiles = (session, length, inputVideoPath) => {
 
 const processVideo = async (session, csvData, videoPath, videoName) => {
   try {
-    console.log(csvData);
     processData = { session, progress: 0 };
 
     let data = [],
@@ -56,20 +55,20 @@ const processVideo = async (session, csvData, videoPath, videoName) => {
         data.push(x);
       }
     });
-    console.log("data", data);
+    console.log("Start processing:", data.length);
 
     let audioList = [];
     let videoList = [];
     for (const item of data) {
       const content = item["Nội dung thuyết minh"];
       let audio = null;
-      // if (content) {
-      //   audio = await getFPTAudio(content);
-      // }
-      // audioList.push(audio);
-      audioList.push(
-        "https://file01.fpt.ai/text2speech-v5/short/2021-05-19/minhquang.+1.ca895bd8a6eee25796a0b60ea8f622d0.mp3"
-      );
+      if (content) {
+        audio = await getFPTAudio(content);
+      }
+      audioList.push(audio);
+      // audioList.push(
+      //   "https://file01.fpt.ai/text2speech-v5/short/2021-05-19/minhquang.+1.ca895bd8a6eee25796a0b60ea8f622d0.mp3"
+      // );
       addProgress(20 / data.length);
     }
     fs.writeFile(
@@ -81,7 +80,7 @@ const processVideo = async (session, csvData, videoPath, videoName) => {
       }
     );
 
-    console.log("audioList", audioList);
+    console.log("AudioList", audioList);
     let index = 0;
     for (const item of data) {
       const audioDuration = await getDuration(audioList[index]);
@@ -108,11 +107,11 @@ const processVideo = async (session, csvData, videoPath, videoName) => {
       addProgress(35 / data.length);
       ++index;
     }
-    console.log("merge videos");
+    console.log("Merge videos...");
     // const outputPath = "src/assets/output-" + session + ".mp4";
     const outputPath = "src/assets/output.mp4";
     mergeVideo(videoList, outputPath, () => {
-      console.log("done", outputPath);
+      console.log("Done.", outputPath);
       processData = { isDone: true, outputPath };
       removeFiles(session, data.length, videoPath);
     });
