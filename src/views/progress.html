@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+    .listItem {
+        padding: 10px;
+    }
+
+    .listItem:hover {
+        color: #FCBB02;
+        cursor: pointer;
+    }
+
+    #anotherCSVBtn {
+        cursor: pointer;
+        color: blue;
+    }
+</style>
+
+<body>
+
+   <div id="container">
+        Processing...
+
+        <div id="progress"></div>
+   </div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+    let interval;
+    const ajax = ()=>{
+        $.ajax({url: "/get-progress", type:"GET" ,  success: function(result){
+        console.log("result",result);
+        if(result.indexOf('%')===-1)
+        {
+            clearInterval(interval)
+            $("#container").html(`Process finished. <a href="${result}" target="_blank">Download video</a><br><a href="/">Back</a>`)
+        }
+        $("#progress").html(result);
+        }});
+    }
+
+    interval = setInterval(() => {
+        ajax();
+    }, 500);
+</script>
+
+</html>

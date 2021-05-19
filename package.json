@@ -1,0 +1,35 @@
+{
+  "name": "mango-review-builder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/nvtc98/mango-review-builder.git",
+  "author": "nvtc.98 <nvtc.98@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "debug": "node --inspect index.js",
+    "deploy": "git add . && git commit -m\"deploy\" && git push heroku master"
+  },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "axios": "^0.21.1",
+    "csv-parser": "^3.0.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "ffmpeg": "^0.0.4",
+    "ffprobe": "^1.1.2",
+    "ffprobe-static": "^3.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^10.0.0",
+    "lodash": "^4.17.21",
+    "module-alias": "^2.2.2",
+    "read-excel-file": "^5.1.0"
+  },
+  "_moduleAliases": {
+    "@modules": "src/modules",
+    "@utilities": "src/utilities",
+    "@constants": "src/constants",
+    "@assets": "src/assets",
+    "@views": "src/views"
+  }
+}

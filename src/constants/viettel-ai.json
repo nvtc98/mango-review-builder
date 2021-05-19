@@ -1,0 +1,17 @@
+{
+    "url": "https://viettelgroup.ai/voice/api/tts/v1/rest/syn",
+    "hostname": "viettelgroup.ai",
+    "path": "/voice/api/tts/v1/rest/syn",
+    "headers": {
+        "token": "djuuaLUCqUxeBkL2HSTUnYI-lt8i-08mSW2zSWHgmumv1QoFDNoK036inU-YyAIB",
+        "Content-Type": "application/json"
+    },
+    "params": {
+        "text": "hệ thống tổng hợp tiếng nói trung tâm không gian mạng",
+        "voice": "doanngocle",
+        "id": "2",
+        "without_filter": false,
+        "speed": 1.0,
+        "tts_return_option": 2
+    }
+}

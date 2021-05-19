@@ -1,0 +1,11 @@
+{
+    "url":"https://api.fpt.ai/hmi/tts/v5",
+    "hostname":"api.fpt.ai",
+    "path":"/hmi/tts/v5",
+    "token":"0wA5Uc0KuV535zz0ru36EvIlbglxOeVm",
+    "headers": {
+        "api-key": "0wA5Uc0KuV535zz0ru36EvIlbglxOeVm",
+        "speed": "+1",
+        "voice": "minhquang"
+    }
+}
