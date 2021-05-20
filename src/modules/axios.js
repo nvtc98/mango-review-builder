@@ -20,4 +20,4 @@ const getFPTAudio = async (text, cb) => {
   }
 };
 
-module.exports = { getViettelAudio, getFPTAudio };
+module.exports = { getFPTAudio };
