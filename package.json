@@ -23,12 +23,13 @@
     "fs-extra": "^10.0.0",
     "lodash": "^4.17.21",
     "module-alias": "^2.2.2",
-    "read-excel-file": "^5.1.0"
+    "read-excel-file": "^5.1.0",
+    "youtube-dl": "^3.5.0"
   },
   "_moduleAliases": {
     "@modules": "src/modules",
     "@utilities": "src/utilities",
-    "@constants": "src/constants",
+    "@configs": "src/configs",
     "@assets": "src/assets",
     "@views": "src/views"
   }
