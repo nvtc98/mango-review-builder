@@ -6,6 +6,7 @@ const {
   getDuration,
   mergeVideo,
 } = require("@modules/ffmpeg");
+const { downloadYoutube } = require("./youtube");
 
 let processData = {};
 
@@ -62,14 +63,14 @@ const processVideo = async (session, csvData, videoPath, videoName) => {
     for (const item of data) {
       const content = item["Nội dung thuyết minh"];
       let audio = null;
-      if (content) {
-        audio = await getFPTAudio(content);
-      }
-      audioList.push(audio);
-      // audioList.push(
-      //   "https://file01.fpt.ai/text2speech-v5/short/2021-05-19/minhquang.+1.ca895bd8a6eee25796a0b60ea8f622d0.mp3"
-      // );
-      addProgress(20 / data.length);
+      // if (content) {
+      //   audio = await getFPTAudio(content);
+      // }
+      // audioList.push(audio);
+      audioList.push(
+        "https://file01.fpt.ai/text2speech-v5/short/2021-05-19/minhquang.+1.ca895bd8a6eee25796a0b60ea8f622d0.mp3"
+      );
+      addProgress(10 / data.length);
     }
     fs.writeFile(
       "src/assets/temp/list-" + session + ".txt",
@@ -79,6 +80,15 @@ const processVideo = async (session, csvData, videoPath, videoName) => {
         console.log("Audio url saved to file.");
       }
     );
+
+    if (!videoPath) {
+      const url = data[0]["Link phim"];
+      if (url.search("youtube.com") !== -1) {
+        await downloadYoutube(url, "src/assets/temp/input.mp4");
+        videoPath = "src/assets/temp/input.mp4";
+      }
+    }
+    addProgress(10);
 
     console.log("AudioList", audioList);
     let index = 0;
