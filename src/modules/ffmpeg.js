@@ -31,7 +31,8 @@ const getDuration = async (path) => {
       if (err) {
         reject();
       }
-      resolve(metadata.format.duration);
+      const result = metadata?.format?.duration || null;
+      resolve(result);
     });
   });
 };

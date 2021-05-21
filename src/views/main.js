@@ -41,6 +41,7 @@ $(() => {
       data: { session, videoSelect: value },
       success: function () {
         $("#progress-container").show();
+        $("input").attr("disabled", "disabled");
         trackProgress();
       },
     });
@@ -56,9 +57,10 @@ $(() => {
         success: function (result) {
           console.log("progress", result);
           if (result.indexOf("%") === -1) {
+            $("input").removeAttr("disabled");
             clearInterval(interval);
-            $("#container").html(
-              `Process finished. <a href="${result}" target="_blank">Download video</a><br><a href="/">Back</a>`
+            $("#progress-container").html(
+              `<hr style="margin: 30px 0;">Process finished. <a href="${result}" target="_blank">Download video</a>`
             );
           }
           $("#progress").html(result);

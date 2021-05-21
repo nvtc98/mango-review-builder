@@ -7,7 +7,7 @@ const {
   getProgess,
   getAvailability,
   getOutputPath,
-} = require("@modules/process");
+} = require("./process");
 const _ = require("lodash");
 const path = require("path");
 const { removeFile } = require("./file");
@@ -111,7 +111,7 @@ const startServer = (port = defaultPort) => {
   });
 
   app.post("/get-csv-data", function (request, response) {
-    const { session } = request.body;
+    const session = _.get(request, "body.session", null);
     if (csvData[session]) {
       const list = Object.keys(_.groupBy(csvData[session], "Tên phim")).filter(
         (x) => x.trim()
@@ -141,15 +141,17 @@ const startServer = (port = defaultPort) => {
     //       .status(400)
     //       .send("Another video is being processed. Please try again later.");
     //   }
-    processVideo(session, csvData[session], null, videoSelect);
+    processVideo(session, csvData[session], videoSelect);
     response.status(200).send("started");
     // });
   });
 
-  app.get("/get-progress", function (request, response) {
-    const progress = getProgess();
+  app.post("/get-progress", function (request, response) {
+    const session = _.get(request, "body.session", null);
+    const progress = getProgess(session);
+    console.log("progress", progress);
     if (progress === -1) {
-      response.status(200).send(getOutputPath());
+      response.status(200).send(getOutputPath(session));
       return;
     }
     response.status(200).send(`${progress}%`);
