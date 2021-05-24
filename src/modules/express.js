@@ -157,6 +157,10 @@ const startServer = (port = defaultPort) => {
     response.status(200).send(`${progress}%`);
   });
 
+  app.post("/test", function (request, response) {
+    console.log(request.body);
+  });
+
   const server = app.listen(process.env.PORT || port, (error) => {
     if (error) return console.log(`Error: ${error}`);
     console.log(
