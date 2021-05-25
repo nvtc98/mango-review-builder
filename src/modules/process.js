@@ -31,7 +31,7 @@ const getOutputPath = (session) =>
 
 const removeFiles = (session, length, inputVideoPath) => {
   try {
-    // fs.unlinkSync(inputVideoPath);
+    fs.unlinkSync(inputVideoPath);
     for (let i = 0; i < length; ++i) {
       const videoPath = `src/assets/temp/video-${session}-${i}.mp4`;
       const videoAudioPath = `src/assets/temp/video-audio-${session}-${i}.mp4`;
@@ -127,10 +127,21 @@ const processVideo = async (session, csvData, videoName) => {
         return;
       }
 
+      let _videoPath = videoPath;
+      // owned video
+      if (item["Link phim"] && item["Link phim"].search("youtube.com") !== -1) {
+        await downloadYoutube(
+          url,
+          "src/assets/temp/input-" + session + "-owned.mp4"
+        );
+        _videoPath = "src/assets/temp/input-" + session + "-owned.mp4";
+      }
+      addProgress(session, 10);
+
       if (isAudioAvailable) {
         // trim video
         await trimVideo(
-          videoPath,
+          _videoPath,
           `src/assets/temp/video-${session}-${index}.mp4`,
           startTime,
           audioDuration + 0.5
@@ -147,7 +158,7 @@ const processVideo = async (session, csvData, videoName) => {
         videoList.push(videoAudioPath);
       } else {
         await trimVideo(
-          videoPath,
+          _videoPath,
           videoAudioPath,
           startTime,
           audioDuration + 0.5
