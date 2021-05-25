@@ -76,32 +76,31 @@ const processVideo = async (session, csvData, videoName) => {
       }
     });
     console.log("Start processing:", data.length);
-    console.log(global.hello);
 
     // get audio
     let audioList = [];
     let videoList = [];
-    for (const item of data) {
-      const content = item["Nội dung thuyết minh"];
-      let audio = null;
-      if (content) {
-        if (jsonData.audio[content]) {
-          const audioDuration = await getDuration(jsonData.audio[content]);
-          if (audioDuration) {
-            audio = jsonData.audio[content];
-            audioList.push(audio);
-          }
-        }
-        if (!audio) {
-          audio = await getVBEE(content);
-        }
-        audioList.push(audio);
-        jsonData.audio[content] = audio;
-      } else {
-        audioList.push(null);
-      }
-      addProgress(session, 10 / data.length);
-    }
+    // for (const item of data) {
+    //   const content = item["Nội dung thuyết minh"];
+    //   let audio = null;
+    //   if (content) {
+    //     if (jsonData.audio[content]) {
+    //       const audioDuration = await getDuration(jsonData.audio[content]);
+    //       if (audioDuration) {
+    //         audio = jsonData.audio[content];
+    //         audioList.push(audio);
+    //       }
+    //     }
+    //     if (!audio) {
+    //       audio = await getVBEE(content);
+    //     }
+    //     audioList.push(audio);
+    //     jsonData.audio[content] = audio;
+    //   } else {
+    //     audioList.push(null);
+    //   }
+    //   addProgress(session, 10 / data.length);
+    // }
     console.log("audioList", audioList);
 
     // download video

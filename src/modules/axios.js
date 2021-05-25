@@ -30,7 +30,6 @@ const getVBEEAudio = async (text, cb) => {
       data: { ...data, input_text: text },
     });
     const result = _.get(response, "data", {});
-    console.log("result", result);
     cb && cb(result);
     return result;
   } catch (error) {

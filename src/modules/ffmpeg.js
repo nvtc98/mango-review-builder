@@ -2,8 +2,8 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 const ffprobe = require("ffprobe"),
   ffprobeStatic = require("ffprobe-static");
-const fs = require("fs");
-const { getViettelAudio } = require("@modules/https");
+// const fs = require("fs");
+// const { getViettelAudio } = require("@modules/https");
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobeStatic.path);

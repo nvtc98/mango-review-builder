@@ -160,7 +160,7 @@ const startServer = (port = defaultPort) => {
   app.post("/vbee-callback", function (request, response) {
     const url = _.get(request, "body.link", "");
     const text = _.get(request, "body.request.input_text", "");
-    console.log("get url callback", url);
+    console.log("get VBEE url callback", url);
     global.vbeeAudio = url;
   });
 
