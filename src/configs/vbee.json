@@ -9,6 +9,6 @@
         "audio_type": "mp3",
         "voice": "hn_male_manhdung_news_48k-thg",
         "input_type": "text",
-        "url_callback_api":"https://mango-review-builder.herokuapp.com/test"
+        "url_callback_api":"https://mango-review-builder.herokuapp.com/vbee-callback"
     }
 }
