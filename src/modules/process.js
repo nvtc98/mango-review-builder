@@ -1,4 +1,4 @@
-const { getFPTAudio } = require("@modules/axios");
+const { getFPTAudio, getVBEEAudio } = require("@modules/axios");
 const fs = require("fs");
 const {
   trimVideo,
@@ -65,7 +65,7 @@ const processVideo = async (session, csvData, videoName) => {
     // get audio
     let audioList = [];
     let videoList = [];
-    for (const item of data) {
+    for (const item of data.slice(0, 1)) {
       const content = item["Nội dung thuyết minh"];
       let audio = null;
       if (content) {
@@ -76,31 +76,32 @@ const processVideo = async (session, csvData, videoName) => {
           }
         }
         if (!audio) {
-          // audio = await getFPTAudio(content);
+          await getVBEEAudio(content);
         }
         // audioList.push(audio);
-        audioList.push(
-          "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
-        );
         // jsonData.audio[content] = audio;
-        jsonData.audio[content] =
-          "https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3";
       } else {
-        audioList.push(null);
+        // audioList.push(null);
       }
       addProgress(session, 10 / data.length);
     }
-    console.log("AudioList", audioList);
 
     // download video
-    const url = data[0]["Link phim"];
-    let videoPath = null;
-    if (url.search("youtube.com") !== -1) {
-      await downloadYoutube(url, "src/assets/temp/input.mp4");
-      videoPath = "src/assets/temp/input.mp4";
-    }
-    addProgress(session, 10);
+    // const url = data[0]["Link phim"];
+    // let videoPath = null;
+    // if (url.search("youtube.com") !== -1) {
+    //   await downloadYoutube(url, "src/assets/temp/input.mp4");
+    //   videoPath = "src/assets/temp/input.mp4";
+    // }
+    // addProgress(session, 10);
 
+    //recheck audio
+    setTimeout(() => {
+      if (!audio) {
+        console.log(global.audio);
+      }
+    }, 3000);
+    return;
     let index = 0;
     for (const item of data) {
       const audioDuration = await getDuration(audioList[index]);

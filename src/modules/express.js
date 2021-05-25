@@ -10,7 +10,7 @@ const {
 } = require("./process");
 const _ = require("lodash");
 const path = require("path");
-const { removeFile } = require("./file");
+const { removeFile, writeJSON, readJSON } = require("./file");
 
 const defaultPort = 5000;
 const app = express();
@@ -157,8 +157,17 @@ const startServer = (port = defaultPort) => {
     response.status(200).send(`${progress}%`);
   });
 
-  app.post("/test", function (request, response) {
-    console.log(request.body);
+  app.post("/vbee-callback", function (request, response) {
+    const url = _.get(request, "body.link", "");
+    const text = _.get(request, "body.request.input_text", "");
+    console.log("url text", url, text);
+    if (!global.audio) {
+      global.audio = {};
+    }
+    global.audio[text] = url;
+    let json = readJSON();
+    const audio = { ...json.audio, [text]: url };
+    writeJSON({ ...json, audio });
   });
 
   const server = app.listen(process.env.PORT || port, (error) => {
