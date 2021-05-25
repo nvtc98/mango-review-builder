@@ -129,14 +129,17 @@ const processVideo = async (session, csvData, videoName) => {
 
       let _videoPath = videoPath;
       // owned video
-      if (item["Link phim"] && item["Link phim"].search("youtube.com") !== -1) {
+      if (
+        item["Link phim"] &&
+        item["Link phim"] !== url &&
+        item["Link phim"].search("youtube.com") !== -1
+      ) {
         await downloadYoutube(
-          url,
+          item["Link phim"],
           "src/assets/temp/input-" + session + "-owned.mp4"
         );
         _videoPath = "src/assets/temp/input-" + session + "-owned.mp4";
       }
-      addProgress(session, 10);
 
       if (isAudioAvailable) {
         // trim video
