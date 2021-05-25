@@ -149,7 +149,7 @@ const startServer = (port = defaultPort) => {
   app.post("/get-progress", function (request, response) {
     const session = _.get(request, "body.session", null);
     const progress = getProgess(session);
-    console.log("progress", progress);
+    // console.log("progress", progress);
     if (progress === -1) {
       response.status(200).send(getOutputPath(session));
       return;
@@ -160,14 +160,8 @@ const startServer = (port = defaultPort) => {
   app.post("/vbee-callback", function (request, response) {
     const url = _.get(request, "body.link", "");
     const text = _.get(request, "body.request.input_text", "");
-    console.log("url text", url, text);
-    if (!global.audio) {
-      global.audio = {};
-    }
-    global.audio[text] = url;
-    let json = readJSON();
-    const audio = { ...json.audio, [text]: url };
-    writeJSON({ ...json, audio });
+    console.log("get url callback", url);
+    global.vbeeAudio = url;
   });
 
   const server = app.listen(process.env.PORT || port, (error) => {

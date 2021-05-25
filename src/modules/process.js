@@ -43,6 +43,20 @@ const removeFiles = (session, length, inputVideoPath) => {
   }
 };
 
+const getVBEE = async (content) => {
+  return await new Promise((resolve, reject) => {
+    await getVBEEAudio(content);
+    const interval = setInterval(() => {
+      if (global.vbeeAudio) {
+        const audio = global.vbeeAudio;
+        global.vbeeAudio = null;
+        clearInterval(interval);
+        resolve(audio);
+      }
+    }, 200);
+  });
+};
+
 const processVideo = async (session, csvData, videoName) => {
   try {
     processData[session] = { session, progress: 0 };
@@ -62,6 +76,7 @@ const processVideo = async (session, csvData, videoName) => {
       }
     });
     console.log("Start processing:", data.length);
+    console.log(global.hello);
 
     // get audio
     let audioList = [];
@@ -78,32 +93,26 @@ const processVideo = async (session, csvData, videoName) => {
           }
         }
         if (!audio) {
-          await getVBEEAudio(content);
+          audio = await getVBEE(content);
         }
-        // audioList.push(audio);
-        // jsonData.audio[content] = audio;
+        audioList.push(audio);
+        jsonData.audio[content] = audio;
       } else {
-        // audioList.push(null);
+        audioList.push(null);
       }
       addProgress(session, 10 / data.length);
     }
+    console.log("audioList", audioList);
 
     // download video
-    // const url = data[0]["Link phim"];
-    // let videoPath = null;
-    // if (url.search("youtube.com") !== -1) {
-    //   await downloadYoutube(url, "src/assets/temp/input.mp4");
-    //   videoPath = "src/assets/temp/input.mp4";
-    // }
-    // addProgress(session, 10);
+    const url = data[0]["Link phim"];
+    let videoPath = null;
+    if (url.search("youtube.com") !== -1) {
+      await downloadYoutube(url, "src/assets/temp/input-" + session + ".mp4");
+      videoPath = "src/assets/temp/input-" + session + ".mp4";
+    }
+    addProgress(session, 10);
 
-    //recheck audio
-    setTimeout(() => {
-      if (_.isEmpty(audioList)) {
-        console.log(global.audio);
-      }
-    }, 3000);
-    return;
     let index = 0;
     for (const item of data) {
       const audioDuration = await getDuration(audioList[index]);
