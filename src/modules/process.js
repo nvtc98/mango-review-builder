@@ -8,6 +8,7 @@ const {
 } = require("@modules/ffmpeg");
 const { downloadYoutube } = require("./youtube");
 const { readJSON, writeJSON } = require("./file");
+const _ = require("lodash");
 
 let processData = {};
 
@@ -73,6 +74,7 @@ const processVideo = async (session, csvData, videoName) => {
           const audioDuration = await getDuration(jsonData.audio[content]);
           if (audioDuration) {
             audio = jsonData.audio[content];
+            audioList.push(audio);
           }
         }
         if (!audio) {
@@ -97,7 +99,7 @@ const processVideo = async (session, csvData, videoName) => {
 
     //recheck audio
     setTimeout(() => {
-      if (!audio) {
+      if (_.isEmpty(audioList)) {
         console.log(global.audio);
       }
     }, 3000);
