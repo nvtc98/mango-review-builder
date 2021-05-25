@@ -44,8 +44,8 @@ const removeFiles = (session, length, inputVideoPath) => {
 };
 
 const getVBEE = async (content) => {
+  await getVBEEAudio(content);
   return await new Promise((resolve, reject) => {
-    await getVBEEAudio(content);
     const interval = setInterval(() => {
       if (global.vbeeAudio) {
         const audio = global.vbeeAudio;
@@ -81,7 +81,7 @@ const processVideo = async (session, csvData, videoName) => {
     // get audio
     let audioList = [];
     let videoList = [];
-    for (const item of data.slice(0, 1)) {
+    for (const item of data) {
       const content = item["Nội dung thuyết minh"];
       let audio = null;
       if (content) {

@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node index.js",
     "debug": "node --inspect index.js",
-    "deploy": "git add . && git commit -m\"deploy\" && git push heroku master"
+    "deploy": "git add . && git commit -m\"deploy\" && git push heroku master",
+    "pushheroku": "git push heroku master"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
