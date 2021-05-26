@@ -169,15 +169,19 @@ const startServer = (port = defaultPort) => {
   });
 
   app.post("/get-vbee-audio", function (request, response) {
-    const id = _.get(request, "body.id", null);
-    console.log("get-vbee-audio", id, global.vbeeAudioData);
-    return _.get(global, `vbeeAudioData['${id}']`, null);
+    try {
+      const id = _.get(request, "body.id", null);
+      console.log("get-vbee-audio", id, global.vbeeAudioData);
+      const data = _.get(global, `vbeeAudioData['${id}']`, null);
+      response.status(200).send(data);
+      delete global.vbeeAudioData[id];
+    } catch {}
   });
 
   app.post("/get-vbee-audio-list", function (request, response) {
     const list = _.get(request, "body.list", []);
     console.log("get-vbee-audio-list", list, global.vbeeAudioData);
-    return list.map((x) => global.vbeeAudioData[x]);
+    response.status(200).send(list.map((x) => global.vbeeAudioData[x]));
   });
 
   const server = app.listen(process.env.PORT || port, (error) => {
