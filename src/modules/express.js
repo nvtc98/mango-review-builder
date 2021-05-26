@@ -174,7 +174,7 @@ const startServer = (port = defaultPort) => {
       console.log("get-vbee-audio", id, global.vbeeAudioData);
       const data = _.get(global, `vbeeAudioData['${id}']`, null);
       response.status(200).send(data);
-      delete global.vbeeAudioData[id];
+      // delete global.vbeeAudioData[id];
     } catch {}
   });
 

@@ -38,4 +38,25 @@ const getVBEEAudio = async (text, cb) => {
   }
 };
 
-module.exports = { getFPTAudio, getVBEEAudio };
+const getVBEEAudioData = async (id) => {
+  try {
+    const response = await axios({
+      method: "post",
+      url: "https://mango-review-builder.herokuapp.com/get-vbee-audio",
+      data: { id },
+    });
+    console.log("response", response);
+    const result = _.get(response, "data", null);
+    if (!result) {
+      console.log("again");
+      return await getVBEEAudioData(id);
+    }
+    console.log("return luon");
+    return result;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+module.exports = { getFPTAudio, getVBEEAudio, getVBEEAudioData };

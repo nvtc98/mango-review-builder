@@ -1,4 +1,8 @@
-const { getFPTAudio, getVBEEAudio } = require("@modules/axios");
+const {
+  getFPTAudio,
+  getVBEEAudio,
+  getVBEEAudioData,
+} = require("@modules/axios");
 const fs = require("fs");
 const {
   trimVideo,
@@ -80,27 +84,28 @@ const processVideo = async (session, csvData, videoName) => {
     // get audio
     let audioList = [];
     let videoList = [];
-    // for (const item of data) {
-    //   const content = item["Nội dung thuyết minh"];
-    //   let audio = null;
-    //   if (content) {
-    //     if (jsonData.audio[content]) {
-    //       const audioDuration = await getDuration(jsonData.audio[content]);
-    //       if (audioDuration) {
-    //         audio = jsonData.audio[content];
-    //         audioList.push(audio);
-    //       }
-    //     }
-    //     if (!audio) {
-    //       audio = await getVBEE(content);
-    //     }
-    //     audioList.push(audio);
-    //     jsonData.audio[content] = audio;
-    //   } else {
-    //     audioList.push(null);
-    //   }
-    //   addProgress(session, 10 / data.length);
-    // }
+    for (const item of data) {
+      const content = item["Nội dung thuyết minh"];
+      let audio = null;
+      if (content) {
+        // if (jsonData.audio[content]) {
+        //   const audioDuration = await getDuration(jsonData.audio[content]);
+        //   if (audioDuration) {
+        //     audio = jsonData.audio[content];
+        //     audioList.push(audio);
+        //   }
+        // }
+        if (!audio) {
+          const audioResult = await getVBEEAudio(content);
+          audioList.push(_.get(audioResult, "data.id", null));
+        }
+        // audioList.push(audio);
+        // jsonData.audio[content] = audio;
+      } else {
+        // audioList.push(null);
+      }
+      addProgress(session, 10 / data.length);
+    }
     console.log("audioList", audioList);
 
     // download video
@@ -114,7 +119,9 @@ const processVideo = async (session, csvData, videoName) => {
 
     let index = 0;
     for (const item of data) {
-      const audioDuration = await getDuration(audioList[index]);
+      const audio = await getVBEEAudioData(audioList[index]);
+      console.log("vbee audio", audio);
+      const audioDuration = await getDuration(audio);
       const videoAudioPath = `src/assets/temp/video-audio-${session}-${index}.mp4`;
       let isAudioAvailable = !!audioDuration;
       if (!audioDuration) {
@@ -154,7 +161,7 @@ const processVideo = async (session, csvData, videoName) => {
         console.log("Add audio:", index, startTime, audioDuration);
         await addAudio(
           `src/assets/temp/video-${session}-${index}.mp4`,
-          audioList[index],
+          audio,
           videoAudioPath
         );
         videoList.push(videoAudioPath);
