@@ -161,11 +161,18 @@ const startServer = (port = defaultPort) => {
     console.log(request.body);
     const url = _.get(request, "body.link", "");
     const text = _.get(request, "body.request.input_text", "");
-    console.log("get VBEE url callback", url);
-    // global.vbeeAudioList.push({});
+    const id = _.get(request, "body.request.request_id", "");
+    if (!global.vbeeAudioData) {
+      global.vbeeAudioData = {};
+    }
+    global.vbeeAudioData[id] = url;
   });
 
-  app.post("/get-vbee-audio-list", function (request, response) {});
+  app.post("/get-vbee-audio-list", function (request, response) {
+    const list = _.get(request, "body.list", []);
+    console.log("get-vbee-audio-list", list, global.vbeeAudioData);
+    return list.map((x) => global.vbeeAudioData[x]);
+  });
 
   const server = app.listen(process.env.PORT || port, (error) => {
     if (error) return console.log(`Error: ${error}`);
