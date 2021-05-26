@@ -102,24 +102,29 @@ const processVideo = async (session, csvData, videoName) => {
         // audioList.push(audio);
         // jsonData.audio[content] = audio;
       } else {
-        // audioList.push(null);
+        audioList.push(null);
       }
       addProgress(session, 10 / data.length);
     }
     console.log("audioList", audioList);
 
     // download video
+    // const url = data[0]["Link phim"];
     const url = data[0]["Link phim"];
-    let videoPath = null;
+    let videoPath = "null";
     if (url.search("youtube.com") !== -1) {
-      await downloadYoutube(url, "src/assets/temp/input-" + session + ".mp4");
-      videoPath = "src/assets/temp/input-" + session + ".mp4";
+      await downloadYoutube(url, "src/assets/temp/input.mp4");
+      videoPath = "src/assets/temp/input.mp4";
+    } else {
+      videoPath = url;
     }
     addProgress(session, 10);
 
     let index = 0;
     for (const item of data) {
-      const audio = await getVBEEAudioData(audioList[index]);
+      const audio = audioList[index]
+        ? await getVBEEAudioData(audioList[index])
+        : null;
       console.log("vbee audio", audio);
       const audioDuration = await getDuration(audio);
       const videoAudioPath = `src/assets/temp/video-audio-${session}-${index}.mp4`;
@@ -135,16 +140,16 @@ const processVideo = async (session, csvData, videoName) => {
 
       let _videoPath = videoPath;
       // owned video
-      if (
-        item["Link phim"] &&
-        item["Link phim"] !== url &&
-        item["Link phim"].search("youtube.com") !== -1
-      ) {
-        await downloadYoutube(
-          item["Link phim"],
-          "src/assets/temp/input-" + session + "-owned.mp4"
-        );
-        _videoPath = "src/assets/temp/input-" + session + "-owned.mp4";
+      if (item["Link phim"] && item["Link phim"] !== url) {
+        if (item["Link phim"].search("youtube.com") !== -1) {
+          await downloadYoutube(
+            item["Link phim"],
+            "src/assets/temp/input-" + session + "-owned.mp4"
+          );
+          _videoPath = "src/assets/temp/input-" + session + "-owned.mp4";
+        } else {
+          _videoPath = item["Link phim"];
+        }
       }
 
       if (isAudioAvailable) {
@@ -192,6 +197,7 @@ const processVideo = async (session, csvData, videoName) => {
     });
   } catch (error) {
     console.log("Error:", error);
+    processData[session].progress = -2;
   }
 };
 

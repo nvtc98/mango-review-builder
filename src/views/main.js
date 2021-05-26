@@ -62,6 +62,11 @@ $(() => {
             $("#progress-container").html(
               `<hr style="margin: 30px 0;">Process finished. <a href="${result}" target="_blank">Download video</a>`
             );
+          } else if (result == -2) {
+            $("#progress").html(
+              "There has been an error while processing your video."
+            );
+            return;
           }
           $("#progress").html(result);
         },
