@@ -136,11 +136,11 @@ const startServer = (port = defaultPort) => {
     //     console.log(err);
     //     return response.status(400).send("Failed to upload file.");
     //   }
-    //   if (!getAvailability()) {
-    //     return response
-    //       .status(400)
-    //       .send("Another video is being processed. Please try again later.");
-    //   }
+    if (!getAvailability()) {
+      return response
+        .status(400)
+        .send("Another video is being processed. Please try again later.");
+    }
     processVideo(session, csvData[session], videoSelect);
     response.status(200).send("started");
     // });

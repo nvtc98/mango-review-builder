@@ -15,9 +15,10 @@ const { readJSON, writeJSON } = require("./file");
 const _ = require("lodash");
 
 let processData = {};
+let isBusy = false;
 
 const getAvailability = () => {
-  return !processData[session].session;
+  return isBusy;
 };
 
 const getProgess = (session) => {
@@ -63,6 +64,7 @@ const getVBEE = async (content) => {
 
 const processVideo = async (session, csvData, videoName) => {
   try {
+    isBusy = true;
     processData[session] = { session, progress: 0 };
     let jsonData = readJSON();
 
@@ -192,12 +194,14 @@ const processVideo = async (session, csvData, videoName) => {
     mergeVideo(videoList, outputPath, () => {
       console.log("Done.", outputPath);
       processData[session] = { isDone: true, outputPath };
-      writeJSON(jsonData);
+      // writeJSON(jsonData);
+      isBusy = false;
       removeFiles(session, data.length, videoPath);
     });
   } catch (error) {
     console.log("Error:", error);
     processData[session].progress = -2;
+    isBusy = false;
   }
 };
 
