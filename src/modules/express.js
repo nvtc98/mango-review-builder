@@ -158,11 +158,14 @@ const startServer = (port = defaultPort) => {
   });
 
   app.post("/vbee-callback", function (request, response) {
+    console.log(request.body);
     const url = _.get(request, "body.link", "");
     const text = _.get(request, "body.request.input_text", "");
     console.log("get VBEE url callback", url);
-    global.vbeeAudio = url;
+    // global.vbeeAudioList.push({});
   });
+
+  app.post("/get-vbee-audio-list", function (request, response) {});
 
   const server = app.listen(process.env.PORT || port, (error) => {
     if (error) return console.log(`Error: ${error}`);
