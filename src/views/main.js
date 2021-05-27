@@ -44,8 +44,8 @@ $(() => {
         $("input").attr("disabled", "disabled");
         trackProgress();
       },
-      error: function () {
-        alert("Another video is being processed. Please try again later.");
+      error: function (e) {
+        alert(e.responseText);
       },
     });
   });

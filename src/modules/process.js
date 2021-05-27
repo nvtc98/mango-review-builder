@@ -18,10 +18,13 @@ let processData = {};
 let isBusy = false;
 
 const getAvailability = () => {
-  return isBusy;
+  return !isBusy;
 };
 
 const getProgess = (session) => {
+  if (!processData[session]) {
+    return 0;
+  }
   return processData[session].isDone
     ? -1
     : Math.round(processData[session].progress) || 0;
