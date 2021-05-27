@@ -141,32 +141,32 @@ const startServer = (port = defaultPort) => {
         .status(400)
         .send("Another video is being processed. Please try again later.");
     }
-    let isRightFormat = true;
-    let videoCount = 0;
-    let isSelectedVideo = false;
+    // let isRightFormat = true;
+    // let videoCount = 0;
+    // let isSelectedVideo = false;
 
-    csvData[session].forEach((x) => {
-      if (x["Tên phim"]) {
-        isSelectedVideo = x["Tên phim"] === videoSelect;
-      }
-      if (!isSelectedVideo || !x["Link phim"]) {
-        return;
-      }
-      if (
-        x["Link phim"].search("youtube.com") === -1 &&
-        !/[.]\w{1,4}$/.test(x["Link phim"])
-      ) {
-        isRightFormat = false;
-        isSelectedVideo = false;
-      } else {
-        ++videoCount;
-      }
-    });
-    if (!isRightFormat || !videoCount) {
-      return response
-        .status(400)
-        .send("Your videos does not match supported formats.");
-    }
+    // csvData[session].forEach((x) => {
+    //   if (x["Tên phim"]) {
+    //     isSelectedVideo = x["Tên phim"] === videoSelect;
+    //   }
+    //   if (!isSelectedVideo || !x["Link phim"]) {
+    //     return;
+    //   }
+    //   if (
+    //     x["Link phim"].search("youtube.com") === -1 &&
+    //     !/[.]\w{1,4}$/.test(x["Link phim"])
+    //   ) {
+    //     isRightFormat = false;
+    //     isSelectedVideo = false;
+    //   } else {
+    //     ++videoCount;
+    //   }
+    // });
+    // if (!isRightFormat || !videoCount) {
+    //   return response
+    //     .status(400)
+    //     .send("Your videos does not match supported formats.");
+    // }
     processVideo(session, csvData[session], videoSelect);
     response.status(200).send("started");
   });
