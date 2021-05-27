@@ -167,9 +167,8 @@ const startServer = (port = defaultPort) => {
         .status(400)
         .send("Your videos does not match supported formats.");
     }
-    // processVideo(session, csvData[session], videoSelect);
+    processVideo(session, csvData[session], videoSelect);
     response.status(200).send("started");
-    // });
   });
 
   app.post("/get-progress", function (request, response) {

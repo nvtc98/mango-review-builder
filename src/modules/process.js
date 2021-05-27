@@ -69,7 +69,7 @@ const processVideo = async (session, csvData, videoName) => {
   try {
     isBusy = true;
     processData[session] = { session, progress: 0 };
-    let jsonData = readJSON();
+    // let jsonData = readJSON();
 
     // filter
     let data = [],
