@@ -1,0 +1,16 @@
+{
+  "host": "https://api.fshare.vn",
+  "path": {
+    "login": "/api/user/login",
+    "download": "/api/session/download"
+  },
+  "headers": {
+    "Content-Type": "application/json",
+    "User-Agent":"MangoReviewBuilder-5AI4HX"
+  },
+  "user": {
+    "user_email": "khaiyen1019@gmail.com",
+    "password": "aloalo1234!",
+    "app_key": "dMnqMMZMUnN5YpvKENaEhdQQ5jxDqddt"
+  }
+}

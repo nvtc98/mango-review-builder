@@ -1,42 +1,50 @@
-const rp = require("request-promise");
+const axios = require("axios");
+const fshare = require("@configs/fshare.json");
+const _ = require("lodash");
 
-const login = async (user) => {
+let fshareData = {
+  token: null,
+  sessionId: null,
+};
+
+const login = async (cb) => {
   try {
-    const options = {
-      method: "POST",
-      url: "https://api.fshare.vn/api/user/login",
-      body: JSON.stringify({
-        user_email: user.user_email,
-        password: user.password,
-        app_key: "L2S7R6ZMagggC5wWkQhX2+aDi467PPuftWUMRFSn",
-      }),
-    };
-    const response = await rp(options);
-    return JSON.parse(response);
+    const { host, path, user, headers } = fshare;
+    const response = await axios({
+      method: "post",
+      url: host + path.login,
+      data: user,
+      headers,
+    });
+    const { token, session_id } = _.get(response, "data", {});
+    fshareData = { token, sessionId: session_id };
+    cb && cb(result);
+    return result;
   } catch (error) {
-    if (error.statusCode === 403) return error.error;
-    return error;
+    console.log(error);
+    return null;
   }
 };
 
-const download = async (token, sessionID, url, password = "") => {
+const download = async (url, password = "") => {
+  const { token, sessionId } = fshareData;
+  const { host, path, headers } = fshare;
   try {
-    const options = {
-      method: "POST",
-      url: "https://api.fshare.vn/api/session/download",
+    const response = await axios({
+      method: "post",
+      url: host + path.download,
       headers: {
-        "Content-Type": "application/json",
-        Cookie: `session_id=${sessionID}`,
+        ...headers,
+        Cookie: sessionId,
       },
-      body: JSON.stringify({
-        token,
+      data: {
         url,
         password,
-      }),
-    };
-
-    const response = await rp(options);
-    return JSON.parse(response);
+        token,
+        zipflag: 0,
+      },
+    });
+    return _.get(response, "data.location", "");
   } catch (error) {
     return error;
   }
