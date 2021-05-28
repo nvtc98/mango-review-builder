@@ -42,7 +42,7 @@ const getVBEEAudioData = async (id) => {
   try {
     const response = await axios({
       method: "post",
-      url: "https://mango-review-builder.herokuapp.com/get-vbee-audio",
+      url: "https://chuong-xai-ke.herokuapp.com/get-vbee-audio",
       data: { id },
     });
     // console.log("response", response);

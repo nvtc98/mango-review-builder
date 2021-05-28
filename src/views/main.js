@@ -69,6 +69,7 @@ $(() => {
             $("#progress").html(
               "There has been an error while processing your video."
             );
+            clearInterval(interval);
             return;
           }
           $("#progress").html(result);
