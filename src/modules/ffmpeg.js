@@ -103,4 +103,28 @@ const trimVideo = async (input, output, startTime, duration) => {
   return await new Promise(promise);
 };
 
-module.exports = { trimVideo, addAudio, getDuration, mergeVideo };
+const trimVideoWithAudio = async (input, output, startTime, duration) => {
+  const promise = (resolve, reject) => {
+    ffmpeg()
+      .input(input)
+      .setStartTime(startTime)
+      .setDuration(duration)
+      .output(output)
+      .on("progress", onProgress)
+      .on("error", (e) => {
+        onError(e);
+        reject(e);
+      })
+      .on("end", resolve)
+      .run();
+  };
+  return await new Promise(promise);
+};
+
+module.exports = {
+  trimVideo,
+  trimVideoWithAudio,
+  addAudio,
+  getDuration,
+  mergeVideo,
+};

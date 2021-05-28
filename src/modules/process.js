@@ -6,12 +6,12 @@ const {
 const fs = require("fs");
 const {
   trimVideo,
+  trimVideoWithAudio,
   addAudio,
   getDuration,
   mergeVideo,
 } = require("@modules/ffmpeg");
 const { downloadYoutube } = require("./youtube");
-const { readJSON, writeJSON } = require("./file");
 const _ = require("lodash");
 const fshare = require("./fshare");
 
@@ -39,7 +39,6 @@ const getOutputPath = (session) =>
   processData[session].outputPath.replace("src/assets/", "assets/");
 
 const removeFiles = (session, length, inputVideoPath) => {
-  return;
   try {
     fs.unlinkSync(inputVideoPath);
     fs.unlinkSync("src/assets/temp/input-" + session + "-owned.mp4"); // TODO: need dynamic
@@ -68,25 +67,10 @@ const getVideoUrl = async (url, pathToDownload) => {
   return videoPath;
 };
 
-// const getVBEE = async (content) => {
-//   await getVBEEAudio(content);
-//   return await new Promise((resolve, reject) => {
-//     const interval = setInterval(() => {
-//       if (global.vbeeAudio) {
-//         const audio = global.vbeeAudio;
-//         global.vbeeAudio = null;
-//         clearInterval(interval);
-//         resolve(audio);
-//       }
-//     }, 200);
-//   });
-// };
-
 const processVideo = async (session, csvData, videoName) => {
   try {
     isBusy = true;
     processData[session] = { session, progress: 0 };
-    // let jsonData = readJSON();
 
     // filter
     let data = [],
@@ -110,19 +94,10 @@ const processVideo = async (session, csvData, videoName) => {
       const content = item["Nội dung thuyết minh"];
       let audio = null;
       if (content) {
-        // if (jsonData.audio[content]) {
-        //   const audioDuration = await getDuration(jsonData.audio[content]);
-        //   if (audioDuration) {
-        //     audio = jsonData.audio[content];
-        //     audioList.push(audio);
-        //   }
-        // }
         if (!audio) {
           const audioResult = await getVBEEAudio(content);
           audioList.push(_.get(audioResult, "data.id", null));
         }
-        // audioList.push(audio);
-        // jsonData.audio[content] = audio;
       } else {
         audioList.push(null);
       }
@@ -141,15 +116,15 @@ const processVideo = async (session, csvData, videoName) => {
         ? await getVBEEAudioData(audioList[index])
         : null;
       console.log("vbee audio", audio);
-      const audioDuration = await getDuration(audio);
-      const videoAudioPath = `src/assets/temp/video-audio-${session}-${index}.mp4`;
-      let isAudioAvailable = !!audioDuration;
+      let isAudioAvailable = !!audio;
+      let audioDuration = isAudioAvailable ? await getDuration(audio) : null;
       if (!audioDuration) {
-        audioDuration = item["Thời lượng đoạn phim"];
+        isAudioAvailable = false;
       }
+      const videoAudioPath = `src/assets/temp/video-audio-${session}-${index}.mp4`;
       const startTime = item["TIme bắt đầu"];
       console.log("Start triming: ", startTime, audioDuration);
-      if (!startTime || !audioDuration) {
+      if (!startTime) {
         return;
       }
 
@@ -181,11 +156,12 @@ const processVideo = async (session, csvData, videoName) => {
         );
         videoList.push(videoAudioPath);
       } else {
-        await trimVideo(
+        console.log("no audio", startTime, item["Thời lượng đoạn phim"]);
+        await trimVideoWithAudio(
           _videoPath,
           videoAudioPath,
           startTime,
-          audioDuration + 0.5
+          item["Thời lượng đoạn phim"]
         );
         addProgress(session, 35 / data.length);
         videoList.push(videoAudioPath);
