@@ -16,8 +16,8 @@ const login = async (cb) => {
       data: user,
       headers,
     });
-    const { token, session_id } = _.get(response, "data", {});
-    fshareData = { token, sessionId: session_id };
+    const result = _.get(response, "data", {});
+    fshareData = { token: result.token, sessionId: result.session_id };
     cb && cb(result);
     return result;
   } catch (error) {
@@ -35,7 +35,7 @@ const download = async (url, password = "") => {
       url: host + path.download,
       headers: {
         ...headers,
-        Cookie: sessionId,
+        Cookie: `session_id=${sessionId}`,
       },
       data: {
         url,

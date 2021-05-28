@@ -13,6 +13,7 @@ const {
 const { downloadYoutube } = require("./youtube");
 const { readJSON, writeJSON } = require("./file");
 const _ = require("lodash");
+const fshare = require("./fshare");
 
 let processData = {};
 let isBusy = false;
@@ -38,8 +39,12 @@ const getOutputPath = (session) =>
   processData[session].outputPath.replace("src/assets/", "assets/");
 
 const removeFiles = (session, length, inputVideoPath) => {
+  return;
   try {
     fs.unlinkSync(inputVideoPath);
+    fs.unlinkSync("src/assets/temp/input-" + session + "-owned.mp4"); // TODO: need dynamic
+  } catch {}
+  try {
     for (let i = 0; i < length; ++i) {
       const videoPath = `src/assets/temp/video-${session}-${i}.mp4`;
       const videoAudioPath = `src/assets/temp/video-audio-${session}-${i}.mp4`;
@@ -51,19 +56,31 @@ const removeFiles = (session, length, inputVideoPath) => {
   }
 };
 
-const getVBEE = async (content) => {
-  await getVBEEAudio(content);
-  return await new Promise((resolve, reject) => {
-    const interval = setInterval(() => {
-      if (global.vbeeAudio) {
-        const audio = global.vbeeAudio;
-        global.vbeeAudio = null;
-        clearInterval(interval);
-        resolve(audio);
-      }
-    }, 200);
-  });
+const getVideoUrl = async (url, pathToDownload) => {
+  let videoPath = url;
+  if (url.search("youtube.com") !== -1) {
+    await downloadYoutube(url, pathToDownload);
+    videoPath = pathToDownload;
+  } else if (url.search("fshare.vn") !== -1) {
+    videoPath = await fshare.download(url);
+  }
+  console.log("videoPath", videoPath);
+  return videoPath;
 };
+
+// const getVBEE = async (content) => {
+//   await getVBEEAudio(content);
+//   return await new Promise((resolve, reject) => {
+//     const interval = setInterval(() => {
+//       if (global.vbeeAudio) {
+//         const audio = global.vbeeAudio;
+//         global.vbeeAudio = null;
+//         clearInterval(interval);
+//         resolve(audio);
+//       }
+//     }, 200);
+//   });
+// };
 
 const processVideo = async (session, csvData, videoName) => {
   try {
@@ -114,15 +131,8 @@ const processVideo = async (session, csvData, videoName) => {
     console.log("audioList", audioList);
 
     // download video
-    // const url = data[0]["Link phim"];
     const url = data[0]["Link phim"];
-    let videoPath = "null";
-    if (url.search("youtube.com") !== -1) {
-      await downloadYoutube(url, "src/assets/temp/input.mp4");
-      videoPath = "src/assets/temp/input.mp4";
-    } else {
-      videoPath = url;
-    }
+    let videoPath = await getVideoUrl(url, "src/assets/temp/input.mp4");
     addProgress(session, 10);
 
     let index = 0;
@@ -146,15 +156,10 @@ const processVideo = async (session, csvData, videoName) => {
       let _videoPath = videoPath;
       // owned video
       if (item["Link phim"] && item["Link phim"] !== url) {
-        if (item["Link phim"].search("youtube.com") !== -1) {
-          await downloadYoutube(
-            item["Link phim"],
-            "src/assets/temp/input-" + session + "-owned.mp4"
-          );
-          _videoPath = "src/assets/temp/input-" + session + "-owned.mp4";
-        } else {
-          _videoPath = item["Link phim"];
-        }
+        _videoPath = await getVideoUrl(
+          item["Link phim"],
+          "src/assets/temp/input-" + session + "-owned.mp4"
+        );
       }
 
       if (isAudioAvailable) {

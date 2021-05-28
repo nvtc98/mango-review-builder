@@ -42,7 +42,7 @@ const getVBEEAudioData = async (id) => {
   try {
     const response = await axios({
       method: "post",
-      url: vbeeConfigs.data.url_callback_api,
+      url: "https://chuong-xai-ke.herokuapp.com/get-vbee-audio",
       data: { id },
     });
     // console.log("response", response);

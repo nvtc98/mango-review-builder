@@ -42,7 +42,9 @@ const mergeVideo = (videoList, output, cb) => {
   videoList.forEach((x) => command.input(x));
   command
     .on("progress", onProgress)
-    .on("error", onError)
+    .on("error", (e) => {
+      onError(e), cb(null);
+    })
     .on("end", cb)
     .mergeToFile(output, "src/assets/temp");
 };
@@ -72,7 +74,10 @@ const addAudio = async (videoWithNoAudio, audio, output) => {
       .addInput(videoWithNoAudio)
       .addInput(audio)
       .on("progress", onProgress)
-      .on("error", onError)
+      .on("error", (e) => {
+        onError(e);
+        reject(e);
+      })
       .on("end", resolve)
       .saveToFile(output, "src/assets/temp");
   };
@@ -88,7 +93,10 @@ const trimVideo = async (input, output, startTime, duration) => {
       .noAudio()
       .output(output)
       .on("progress", onProgress)
-      .on("error", (e) => reject(e))
+      .on("error", (e) => {
+        onError(e);
+        reject(e);
+      })
       .on("end", resolve)
       .run();
   };
