@@ -2,6 +2,7 @@ const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 const ffprobe = require("ffprobe"),
   ffprobeStatic = require("ffprobe-static");
+const _ = require("lodash");
 // const fs = require("fs");
 // const { getViettelAudio } = require("@modules/https");
 
@@ -31,7 +32,7 @@ const getDuration = async (path) => {
       if (err) {
         reject();
       }
-      const result = metadata?.format?.duration || null;
+      const result = _.get(metadata, "format.duration", null) || null;
       resolve(result);
     });
   });
